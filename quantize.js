@@ -83,17 +83,17 @@ var MMCQ = (function() {
         vbox.histo = histo;
     }
     VBox.prototype = {
-        volume: function(force) {
+        volume: function(/* force */) {
             var vbox = this;
-            if (!vbox._volume || force) {
+            if (!vbox._volume /* || force */) {
                 vbox._volume = ((vbox.r2 - vbox.r1 + 1) * (vbox.g2 - vbox.g1 + 1) * (vbox.b2 - vbox.b1 + 1));
             }
             return vbox._volume;
         },
-        count: function(force) {
+        count: function(/* force */) {
             var vbox = this,
                 histo = vbox.histo;
-            if (!vbox._count_set || force) {
+            if (!vbox._count_set /* || force */) {
                 var npix = 0,
                     i, j, k;
                 for (i = vbox.r1; i <= vbox.r2; i++) {
@@ -113,10 +113,10 @@ var MMCQ = (function() {
             var vbox = this;
             return new VBox(vbox.r1, vbox.r2, vbox.g1, vbox.g2, vbox.b1, vbox.b2, vbox.histo);
         },
-        avg: function(force) {
+        avg: function(/* force */) {
             var vbox = this,
                 histo = vbox.histo;
-            if (!vbox._avg || force) {
+            if (!vbox._avg /* || force */) {
                 var ntot = 0,
                     /* mult = 1 << (8 - sigbits), */
                     /* mult = 1 << 3, */
