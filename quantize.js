@@ -256,12 +256,29 @@ var MMCQ = (function() {
             rval = pixel[0] >> rshift;
             gval = pixel[1] >> rshift;
             bval = pixel[2] >> rshift;
-            if (rval < rmin) rmin = rval;
+            /* if (rval < rmin) rmin = rval;
             else if (rval > rmax) rmax = rval;
             if (gval < gmin) gmin = gval;
             else if (gval > gmax) gmax = gval;
             if (bval < bmin) bmin = bval;
-            else if (bval > bmax)  bmax = bval;
+            else if (bval > bmax)  bmax = bval; */
+            if (rval < rmin) {
+                rmin = rval;
+            } else if (rval > rmax) {
+                rmax = rval;
+            }
+
+            if (gval < gmin) {
+                gmin = gval;
+            } else if (gval > gmax) {
+                gmax = gval;
+            }
+
+            if (bval < bmin) {
+                bmin = bval;
+            } else if (bval > bmax)  {
+                bmax = bval;
+            }
         });
         return new VBox(rmin, rmax, gmin, gmax, bmin, bmax, histo);
     }
@@ -295,8 +312,7 @@ var MMCQ = (function() {
                 total += sum;
                 partialsum[i] = total;
             }
-        }
-        else if (maxw == gw) {
+        } else if (maxw == gw) {
             for (i = vbox.g1; i <= vbox.g2; i++) {
                 sum = 0;
                 for (j = vbox.r1; j <= vbox.r2; j++) {
@@ -335,13 +351,20 @@ var MMCQ = (function() {
                     vbox2 = vbox.copy();
                     left = i - vbox[dim1];
                     right = vbox[dim2] - i;
-                    if (left <= right)
+                    if (left <= right) {
                         d2 = Math.min(vbox[dim2] - 1, ~~(i + right / 2));
-                    else d2 = Math.max(vbox[dim1], ~~(i - 1 - left / 2));
+                    } else {
+                        d2 = Math.max(vbox[dim1], ~~(i - 1 - left / 2));
+                    }
                     // avoid 0-count boxes
-                    while (!partialsum[d2]) d2++;
+                    while (!partialsum[d2]) {
+                        d2++;
+                    }
                     count2 = lookaheadsum[d2];
-                    while (!count2 && partialsum[d2-1]) count2 = lookaheadsum[--d2];
+                    while (!count2 && partialsum[d2-1]) {
+                        count2 = lookaheadsum[--d2];
+                    }
+
                     // set dimensions
                     vbox1[dim2] = d2;
                     vbox2[dim1] = vbox1[dim2] + 1;
