@@ -95,11 +95,11 @@ var MMCQ = (function() {
             },
             map: function(f) {
                 return contents.map(f);
-            },
+            }/* ,
             debug: function() {
                 if (!sorted) sort();
                 return contents;
-            }
+            } */
         };
     }
     
@@ -131,8 +131,7 @@ var MMCQ = (function() {
                 for (i = vbox.r1; i <= vbox.r2; i++) {
                     for (j = vbox.g1; j <= vbox.g2; j++) {
                         for (k = vbox.b1; k <= vbox.b2; k++) {
-                             index = getColorIndex(i,j,k);
-                             npix += (histo[index] || 0);
+                             npix += (histo[getColorIndex(i,j,k)] || 0);
                         }
                     }
                 }
@@ -183,8 +182,8 @@ var MMCQ = (function() {
         },
         contains: function(pixel) {
             var vbox = this,
-                rval = pixel[0] >> rshift;
-                gval = pixel[1] >> rshift;
+                rval = pixel[0] >> rshift,
+                gval = pixel[1] >> rshift,
                 bval = pixel[2] >> rshift;
             return (rval >= vbox.r1 && rval <= vbox.r2 &&
                     gval >= vbox.g1 && rval <= vbox.g2 &&
@@ -199,7 +198,7 @@ var MMCQ = (function() {
                 a.vbox.count()*a.vbox.volume(), 
                 b.vbox.count()*b.vbox.volume()
             ) 
-        });;
+        });
     }
     CMap.prototype = {
         push: function(vbox) {
@@ -232,7 +231,7 @@ var MMCQ = (function() {
                     Math.pow(color[1] - vboxes.peek(i).color[1], 2) +
                     Math.pow(color[1] - vboxes.peek(i).color[1], 2)
                 );
-                if (d2 < d1 || d1 === undefined) {
+                if (d1 === undefined || d2 < d1) {
                     d1 = d2;
                     pColor = vboxes.peek(i).color;
                 }
@@ -260,8 +259,8 @@ var MMCQ = (function() {
     // histo (1-d array, giving the number of pixels in
     // each quantized region of color space), or null on error
     function getHisto(pixels) {
-        var histosize = 1 << (3 * sigbits),
-            histo = new Array(histosize),
+        var /* histosize = 1 << (3 * sigbits), */
+            histo = /* new Array(histosize) */ [],
             index, rval, gval, bval;
         pixels.forEach(function(pixel) {
             rval = pixel[0] >> rshift;
@@ -392,8 +391,8 @@ var MMCQ = (function() {
         
         // XXX: check color content and convert to grayscale if insufficient
         
-        var histo = getHisto(pixels),
-            histosize = 1 << (3 * sigbits);
+        var histo = getHisto(pixels) /* ,
+            histosize = 1 << (3 * sigbits) */;
         
         // check that we aren't below maxcolors already
         var nColors = 0;
