@@ -238,28 +238,7 @@ var MMCQ = (function() {
                 vboxes[idx].color = [255,255,255];
         } */
     };
-    
-    // histo (1-d array, giving the number of pixels in
-    // each quantized region of color space), or null on error
-    function getHisto(pixels) {
-        var /* histosize = 1 << (3 * sigbits), */
-            histo = /* new Array(histosize) */ [],
-            index, rval, gval, bval;
-        pixels.forEach(function(pixel) {
-            /* rval = pixel[0] >> rshift;
-            gval = pixel[1] >> rshift;
-            bval = pixel[2] >> rshift; */
-            rval = pixel[0] >> 3;
-            gval = pixel[1] >> 3;
-            bval = pixel[2] >> 3;
-            /* index = getColorIndex(rval, gval, bval); */
-            index = (rval << 10) + (gval << 5) + bval;
 
-            histo[index] = (histo[index] || 0) + 1;
-        });
-        return histo;
-    }
-    
     function vboxFromPixels(pixels, histo) {
         var rmin=1000000, rmax=0, 
             gmin=1000000, gmax=0, 
@@ -423,9 +402,32 @@ var MMCQ = (function() {
         
         // XXX: check color content and convert to grayscale if insufficient
         
-        var histo = getHisto(pixels) /* ,
-            histosize = 1 << (3 * sigbits) */;
-        
+        /* var histo = getHisto(pixels); */ /* ,
+            histosize = 1 << (3 * sigbits) */
+
+        // histo (1-d array, giving the number of pixels in
+        // each quantized region of color space), or null on error
+        /* function getHisto(pixels) {
+            var /* histosize = 1 << (3 * sigbits), */
+                var histo = /* new Array(histosize) */ [],
+                index, rval, gval, bval;
+            pixels.forEach(function(pixel) {
+                /* rval = pixel[0] >> rshift;
+                gval = pixel[1] >> rshift;
+                bval = pixel[2] >> rshift; */
+                rval = pixel[0] >> 3;
+                gval = pixel[1] >> 3;
+                bval = pixel[2] >> 3;
+                /* index = getColorIndex(rval, gval, bval); */
+                index = (rval << 10) + (gval << 5) + bval;
+
+                histo[index] = (histo[index] || 0) + 1;
+            });
+            /* return histo; */
+        /* } */
+
+
+
         // check that we aren't below maxcolors already
         var nColors = 0;
         histo.forEach(function() { nColors++ });
