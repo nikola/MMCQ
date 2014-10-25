@@ -488,6 +488,11 @@ var MMCQ = (function() {
                 var aCount = a.count(), bCount = b.count();
                 return (aCount < bCount) ? -1 : ((aCount > bCount) ? 1 : 0);
             });
+        var pq2 = new PQueue(function(a,b) {
+            /* return pv.naturalOrder(a.count()*a.volume(), b.count()*b.volume()) */
+            var aComparable = a.count()*a.volume(), bComparable = b.count()*b.volume();
+            return (aComparable < bComparable) ? -1 : ((aComparable > bComparable) ? 1 : 0);
+        });
 
         pq.push(vbox);
         
@@ -535,11 +540,6 @@ var MMCQ = (function() {
         // console.log(pq.size(), pq.debug().length, pq.debug().slice());
         
         // Re-sort by the product of pixel occupancy times the size in color space.
-        var pq2 = new PQueue(function(a,b) { 
-            /* return pv.naturalOrder(a.count()*a.volume(), b.count()*b.volume()) */
-            var aComparable = a.count()*a.volume(), bComparable = b.count()*b.volume();
-            return (aComparable < bComparable) ? -1 : ((aComparable > bComparable) ? 1 : 0);
-        });
         while (pq.size()) {
             pq2.push(pq.pop());
         }
