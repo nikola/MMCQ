@@ -28,14 +28,16 @@ var newPixels = myPixels.map(function(p) {
  */
 var MMCQ = (function() {
     // private constants
-    var sigbits = 5,
-        rshift = 8 - sigbits,
+    var /* sigbits = 5, */
+        /* rshift = 8 - sigbits, */
+        /* rshift = 3, */
         maxIterations = 1000,
         fractByPopulations = 0.75;
     
     // get reduced-space color index for a pixel
     function getColorIndex(r, g, b) {
-        return (r << (2 * sigbits)) + (g << sigbits) + b;
+        /* return (r << (2 * sigbits)) + (g << sigbits) + b; */
+        return (r << 10) + (g << 5) + b;
     }
     
     // Simple priority queue
@@ -121,7 +123,8 @@ var MMCQ = (function() {
                 histo = vbox.histo;
             if (!vbox._avg || force) {
                 var ntot = 0,
-                    mult = 1 << (8 - sigbits),
+                    /* mult = 1 << (8 - sigbits), */
+                    /* mult = 1 << 3, */
                     rsum = 0,
                     gsum = 0,
                     bsum = 0,
@@ -133,9 +136,12 @@ var MMCQ = (function() {
                              histoindex = getColorIndex(i,j,k);
                              hval = histo[histoindex] || 0;
                              ntot += hval;
-                             rsum += (hval * (i + 0.5) * mult);
+                             /* rsum += (hval * (i + 0.5) * mult);
                              gsum += (hval * (j + 0.5) * mult);
-                             bsum += (hval * (k + 0.5) * mult);
+                             bsum += (hval * (k + 0.5) * mult); */
+                             rsum += (hval * (i + 0.5) * 8);
+                             gsum += (hval * (j + 0.5) * 8);
+                             bsum += (hval * (k + 0.5) * 8);
                         }
                     }
                 }
@@ -144,9 +150,12 @@ var MMCQ = (function() {
                 } else {
                     console.log('empty box');
                     vbox._avg = [
-                        ~~(mult * (vbox.r1 + vbox.r2 + 1) / 2),
+                        /* ~~(mult * (vbox.r1 + vbox.r2 + 1) / 2),
                         ~~(mult * (vbox.g1 + vbox.g2 + 1) / 2),
-                        ~~(mult * (vbox.b1 + vbox.b2 + 1) / 2)
+                        ~~(mult * (vbox.b1 + vbox.b2 + 1) / 2) */
+                        ~~(8 * (vbox.r1 + vbox.r2 + 1) / 2),
+                        ~~(8 * (vbox.g1 + vbox.g2 + 1) / 2),
+                        ~~(8 * (vbox.b1 + vbox.b2 + 1) / 2)
                     ];
                 }
             }
@@ -154,9 +163,12 @@ var MMCQ = (function() {
         },
         contains: function(pixel) {
             var vbox = this,
-                rval = pixel[0] >> rshift,
+                /* rval = pixel[0] >> rshift,
                 gval = pixel[1] >> rshift,
-                bval = pixel[2] >> rshift;
+                bval = pixel[2] >> rshift; */
+                rval = pixel[0] >> 3,
+                gval = pixel[1] >> 3,
+                bval = pixel[2] >> 3;
             return (rval >= vbox.r1 && rval <= vbox.r2 &&
                     gval >= vbox.g1 && rval <= vbox.g2 &&
                     bval >= vbox.b1 && rval <= vbox.b2);
@@ -237,9 +249,12 @@ var MMCQ = (function() {
             histo = /* new Array(histosize) */ [],
             index, rval, gval, bval;
         pixels.forEach(function(pixel) {
-            rval = pixel[0] >> rshift;
+            /* rval = pixel[0] >> rshift;
             gval = pixel[1] >> rshift;
-            bval = pixel[2] >> rshift;
+            bval = pixel[2] >> rshift; */
+            rval = pixel[0] >> 3;
+            gval = pixel[1] >> 3;
+            bval = pixel[2] >> 3;
             index = getColorIndex(rval, gval, bval);
             histo[index] = (histo[index] || 0) + 1;
         });
@@ -253,9 +268,12 @@ var MMCQ = (function() {
             rval, gval, bval;
         // find min/max
         pixels.forEach(function(pixel) {
-            rval = pixel[0] >> rshift;
+            /* rval = pixel[0] >> rshift;
             gval = pixel[1] >> rshift;
-            bval = pixel[2] >> rshift;
+            bval = pixel[2] >> rshift; */
+            rval = pixel[0] >> 3;
+            gval = pixel[1] >> 3;
+            bval = pixel[2] >> 3;
             /* if (rval < rmin) rmin = rval;
             else if (rval > rmax) rmax = rval;
             if (gval < gmin) gmin = gval;
