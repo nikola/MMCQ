@@ -3,35 +3,7 @@
  * Licensed under the MIT license: http://www.opensource.org/licenses/mit-license.php
  */
 
-// fill out a couple protovis dependencies
-/*!
- * Block below copied from Protovis: http://mbostock.github.com/protovis/
- * Copyright 2010 Stanford Visualization Group
- * Licensed under the BSD License: http://www.opensource.org/licenses/bsd-license.php
- */
-if (!pv) {
-    var pv = {
-        map: function(array, f) {
-          var o = {};
-          return f
-              ? array.map(function(d, i) { o.index = i; return f.call(o, d); })
-              : array.slice();
-        },
-        naturalOrder: function(a, b) {
-            return (a < b) ? -1 : ((a > b) ? 1 : 0);
-        },
-        sum: function(array, f) {
-          var o = {};
-          return array.reduce(f
-              ? function(p, d, i) { o.index = i; return p + f.call(o, d); }
-              : function(p, d) { return p + d; }, 0);
-        },
-        max: function(array, f) {
-          return Math.max.apply(null, f ? pv.map(array, f) : array);
-        }
-    }
-}
- 
+
 /**
  * Basic Javascript port of the MMCQ (modified median cut quantization)
  * algorithm from the Leptonica library (http://www.leptonica.com/).
@@ -194,10 +166,12 @@ var MMCQ = (function() {
     // Color map
     function CMap() {
         this.vboxes = new PQueue(function(a,b) { 
-            return pv.naturalOrder(
+            /* return pv.naturalOrder(
                 a.vbox.count()*a.vbox.volume(), 
                 b.vbox.count()*b.vbox.volume()
-            ) 
+            ) */
+            var aComparable = a.vbox.count() * a.vbox.volume(), bComparable = b.vbox.count()*b.vbox.volume();
+            return (aComparable < bComparable) ? -1 : ((aComparable > bComparable) ? 1 : 0);
         });
     }
     CMap.prototype = {
@@ -237,7 +211,7 @@ var MMCQ = (function() {
                 }
             }
             return pColor;
-        },
+        } /*,
         forcebw: function() {
             // XXX: won't  work yet
             var vboxes = this.vboxes;
@@ -253,7 +227,7 @@ var MMCQ = (function() {
                 highest = vboxes[idx].color;
             if (highest[0] > 251 && highest[1] > 251 && highest[2] > 251)
                 vboxes[idx].color = [255,255,255];
-        }
+        } */
     };
     
     // histo (1-d array, giving the number of pixels in
@@ -298,7 +272,8 @@ var MMCQ = (function() {
         var rw = vbox.r2 - vbox.r1 + 1,
             gw = vbox.g2 - vbox.g1 + 1,
             bw = vbox.b2 - vbox.b1 + 1,
-            maxw = pv.max([rw, gw, bw]);
+            /* maxw = pv.max([rw, gw, bw]); */
+            maxw = Math.max.apply(null, [rw, gw, bw]);
         // only one pixel, no split
         if (vbox.count() == 1) {
             return [vbox.copy()]
@@ -403,7 +378,12 @@ var MMCQ = (function() {
         
         // get the beginning vbox from the colors
         var vbox = vboxFromPixels(pixels, histo),
-            pq = new PQueue(function(a,b) { return pv.naturalOrder(a.count(), b.count()) });
+            /* pq = new PQueue(function(a,b) { return pv.naturalOrder(a.count(), b.count()) }); */
+            pq = new PQueue(function (a, b) {
+                var aCount = a.count(), bCount = b.count();
+                return (aCount < bCount) ? -1 : ((aCount > bCount) ? 1 : 0);
+            });
+
         pq.push(vbox);
         
         // inner function to do the iteration
@@ -446,7 +426,9 @@ var MMCQ = (function() {
         
         // Re-sort by the product of pixel occupancy times the size in color space.
         var pq2 = new PQueue(function(a,b) { 
-            return pv.naturalOrder(a.count()*a.volume(), b.count()*b.volume()) 
+            /* return pv.naturalOrder(a.count()*a.volume(), b.count()*b.volume()) */
+            var aComparable = a.count()*a.volume(), bComparable = b.count()*b.volume();
+            return (aComparable < bComparable) ? -1 : ((aComparable > bComparable) ? 1 : 0);
         });
         while (pq.size()) {
             pq2.push(pq.pop());
