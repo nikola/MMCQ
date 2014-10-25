@@ -316,16 +316,17 @@ var MMCQ = (function() {
         var total = 0,
             partialsum = [],
             lookaheadsum = [],
-            i, j, k, sum, index;
+            i, j, k, sum /*, index */;
         if (maxw == rw) {
             for (i = vbox.r1; i <= vbox.r2; i++) {
                 sum = 0;
                 for (j = vbox.g1; j <= vbox.g2; j++) {
                     for (k = vbox.b1; k <= vbox.b2; k++) {
                         /* index = getColorIndex(i,j,k); */
-                        index = (i << 10) + (j << 5) + k;
+                        /* index = (i << 10) + (j << 5) + k;
 
-                        sum += (histo[index] || 0);
+                        sum += (histo[index] || 0); */
+                        sum += (histo[(i << 10) + (j << 5) + k] || 0);
                     }
                 }
                 total += sum;
@@ -337,9 +338,10 @@ var MMCQ = (function() {
                 for (j = vbox.r1; j <= vbox.r2; j++) {
                     for (k = vbox.b1; k <= vbox.b2; k++) {
                         /* index = getColorIndex(j,i,k); */
-                        index = (i << 10) + (j << 5) + k;
+                        /* index = (i << 10) + (j << 5) + k;
 
-                        sum += (histo[index] || 0);
+                        sum += (histo[index] || 0); */
+                        sum += (histo[(i << 10) + (j << 5) + k] || 0);
                     }
                 }
                 total += sum;
@@ -352,15 +354,17 @@ var MMCQ = (function() {
                 for (j = vbox.r1; j <= vbox.r2; j++) {
                     for (k = vbox.g1; k <= vbox.g2; k++) {
                         /* index = getColorIndex(j,k,i); */
-                        index = (i << 10) + (j << 5) + k;
+                        /* index = (i << 10) + (j << 5) + k;
 
-                        sum += (histo[index] || 0);
+                        sum += (histo[index] || 0); */
+                        sum += (histo[ (i << 10) + (j << 5) + k] || 0);
                     }
                 }
                 total += sum;
                 partialsum[i] = total;
             }
         }
+
         partialsum.forEach(function (d,i) {
             lookaheadsum[i] = total-d;
         });
