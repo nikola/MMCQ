@@ -109,10 +109,10 @@ var MMCQ = (function() {
             }
             return vbox._count;
         },
-        copy: function() {
+        /* copy: function() {
             var vbox = this;
             return new VBox(vbox.r1, vbox.r2, vbox.g1, vbox.g2, vbox.b1, vbox.b2, vbox.histo);
-        },
+        }, */
         avg: function(/* force */) {
             var vbox = this,
                 histo = vbox.histo;
@@ -310,7 +310,9 @@ var MMCQ = (function() {
             maxw = Math.max.apply(null, [rw, gw, bw]);
         // only one pixel, no split
         if (vbox.count() == 1) {
-            return [vbox.copy()]
+            /* return [vbox.copy()]; */
+            /* var vbox = this; */
+            return new VBox(vbox.r1, vbox.r2, vbox.g1, vbox.g2, vbox.b1, vbox.b2, vbox.histo);
         }
         /* Find the partial sum arrays along the selected axis. */
         var total = 0,
@@ -375,15 +377,19 @@ var MMCQ = (function() {
                 left, right, vbox1, vbox2, d2, count2=0;
             for (i = vbox[dim1]; i <= vbox[dim2]; i++) {
                 if (partialsum[i] > total / 2) {
-                    vbox1 = vbox.copy();
-                    vbox2 = vbox.copy();
+                    /* vbox1 = vbox.copy(); */
+                    vbox1 = new VBox(vbox.r1, vbox.r2, vbox.g1, vbox.g2, vbox.b1, vbox.b2, vbox.histo);
+                    /* vbox2 = vbox.copy(); */
+                    vbox2 = new VBox(vbox.r1, vbox.r2, vbox.g1, vbox.g2, vbox.b1, vbox.b2, vbox.histo);
+
                     left = i - vbox[dim1];
                     right = vbox[dim2] - i;
-                    if (left <= right) {
+                    /* if (left <= right) {
                         d2 = Math.min(vbox[dim2] - 1, ~~(i + right / 2));
                     } else {
                         d2 = Math.max(vbox[dim1], ~~(i - 1 - left / 2));
-                    }
+                    } */
+                    d2 = (left > right) ? Math.max(vbox[dim1], ~~(i - 1 - left / 2)) : Math.min(vbox[dim2] - 1, ~~(i + right / 2));
                     // avoid 0-count boxes
                     while (!partialsum[d2]) {
                         d2++;
