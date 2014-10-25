@@ -130,14 +130,16 @@ var MMCQ = (function() {
                     gsum = 0,
                     bsum = 0,
                     hval,
-                    i, j, k, histoindex;
+                    i, j, k /* , histoindex */;
                 for (i = vbox.r1; i <= vbox.r2; i++) {
                     for (j = vbox.g1; j <= vbox.g2; j++) {
                         for (k = vbox.b1; k <= vbox.b2; k++) {
                              /* histoindex = getColorIndex(i,j,k); */
-                             histoindex = (i << 10) + (j << 5) + k;
+                             /* histoindex = (i << 10) + (j << 5) + k;
 
-                             hval = histo[histoindex] || 0;
+                             hval = histo[histoindex] || 0; */
+                             hval = histo[(i << 10) + (j << 5) + k] || 0;
+
                              ntot += hval;
                              /* rsum += (hval * (i + 0.5) * mult);
                              gsum += (hval * (j + 0.5) * mult);
@@ -279,7 +281,9 @@ var MMCQ = (function() {
     } */
     
     function medianCutApply(histo, vbox) {
-        if (!vbox.count()) return;
+        if (!vbox.count()) {
+            return;
+        }
         
         var rw = vbox.r2 - vbox.r1 + 1,
             gw = vbox.g2 - vbox.g1 + 1,
