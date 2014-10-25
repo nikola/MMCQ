@@ -29,10 +29,10 @@ var newPixels = myPixels.map(function(p) {
 var MMCQ = (function() {
 
     // get reduced-space color index for a pixel
-    function getColorIndex(r, g, b) {
+    /* function getColorIndex(r, g, b) { */
         /* return (r << (2 * sigbits)) + (g << sigbits) + b; */
-        return (r << 10) + (g << 5) + b;
-    }
+        /* return (r << 10) + (g << 5) + b;
+    } */
     
     // Simple priority queue
     function PQueue(comparator) {
@@ -99,7 +99,8 @@ var MMCQ = (function() {
                 for (i = vbox.r1; i <= vbox.r2; i++) {
                     for (j = vbox.g1; j <= vbox.g2; j++) {
                         for (k = vbox.b1; k <= vbox.b2; k++) {
-                             npix += (histo[getColorIndex(i,j,k)] || 0);
+                             /* npix += (histo[getColorIndex(i,j,k)] || 0); */
+                            npix += (histo[(i << 10) + (j << 5) + k] || 0);
                         }
                     }
                 }
@@ -127,7 +128,9 @@ var MMCQ = (function() {
                 for (i = vbox.r1; i <= vbox.r2; i++) {
                     for (j = vbox.g1; j <= vbox.g2; j++) {
                         for (k = vbox.b1; k <= vbox.b2; k++) {
-                             histoindex = getColorIndex(i,j,k);
+                             /* histoindex = getColorIndex(i,j,k); */
+                             histoindex = (i << 10) + (j << 5) + k;
+
                              hval = histo[histoindex] || 0;
                              ntot += hval;
                              /* rsum += (hval * (i + 0.5) * mult);
@@ -249,7 +252,9 @@ var MMCQ = (function() {
             rval = pixel[0] >> 3;
             gval = pixel[1] >> 3;
             bval = pixel[2] >> 3;
-            index = getColorIndex(rval, gval, bval);
+            /* index = getColorIndex(rval, gval, bval); */
+            index = (rval << 10) + (gval << 5) + bval;
+
             histo[index] = (histo[index] || 0) + 1;
         });
         return histo;
@@ -317,7 +322,9 @@ var MMCQ = (function() {
                 sum = 0;
                 for (j = vbox.g1; j <= vbox.g2; j++) {
                     for (k = vbox.b1; k <= vbox.b2; k++) {
-                        index = getColorIndex(i,j,k);
+                        /* index = getColorIndex(i,j,k); */
+                        index = (i << 10) + (j << 5) + k;
+
                         sum += (histo[index] || 0);
                     }
                 }
@@ -329,7 +336,9 @@ var MMCQ = (function() {
                 sum = 0;
                 for (j = vbox.r1; j <= vbox.r2; j++) {
                     for (k = vbox.b1; k <= vbox.b2; k++) {
-                        index = getColorIndex(j,i,k);
+                        /* index = getColorIndex(j,i,k); */
+                        index = (i << 10) + (j << 5) + k;
+
                         sum += (histo[index] || 0);
                     }
                 }
@@ -342,7 +351,9 @@ var MMCQ = (function() {
                 sum = 0;
                 for (j = vbox.r1; j <= vbox.r2; j++) {
                     for (k = vbox.g1; k <= vbox.g2; k++) {
-                        index = getColorIndex(j,k,i);
+                        /* index = getColorIndex(j,k,i); */
+                        index = (i << 10) + (j << 5) + k;
+
                         sum += (histo[index] || 0);
                     }
                 }
