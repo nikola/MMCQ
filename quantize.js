@@ -27,13 +27,7 @@ var newPixels = myPixels.map(function(p) {
  
  */
 var MMCQ = (function() {
-    // private constants
-    var /* sigbits = 5, */
-        /* rshift = 8 - sigbits, */
-        /* rshift = 3, */
-        maxIterations = 1000,
-        fractByPopulations = 0.75;
-    
+
     // get reduced-space color index for a pixel
     function getColorIndex(r, g, b) {
         /* return (r << (2 * sigbits)) + (g << sigbits) + b; */
@@ -432,7 +426,8 @@ var MMCQ = (function() {
             var ncolors = 1,
                 niters = 0,
                 vbox;
-            while (niters < maxIterations) {
+            /* while (niters < maxIterations) { */
+            while (niters < 1000) {
                 vbox = lh.pop();
                 if (!vbox.count())  { /* just put it back */
                     lh.push(vbox);
@@ -454,7 +449,8 @@ var MMCQ = (function() {
                     ncolors++;
                 }
                 if (ncolors >= target) return;
-                if (niters++ > maxIterations) {
+                /* if (niters++ > maxIterations) { */
+                if (niters++ > 1000) {
                     console.log("infinite loop; perhaps too few pixels!");
                     return;
                 }
@@ -462,7 +458,8 @@ var MMCQ = (function() {
         }
         
         // first set of colors, sorted by population
-        iter(pq, fractByPopulations * maxcolors);
+        /* iter(pq, fractByPopulations * maxcolors); */
+        iter(pq, 0.75 * maxcolors);
         // console.log(pq.size(), pq.debug().length, pq.debug().slice());
         
         // Re-sort by the product of pixel occupancy times the size in color space.
