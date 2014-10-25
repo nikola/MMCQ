@@ -50,12 +50,18 @@ var MMCQ = (function() {
                 sorted = false;
             },
             peek: function(index) {
-                if (!sorted) sort();
-                if (index===undefined) index = contents.length - 1;
+                if (!sorted) {
+                    sort();
+                }
+                /* if (index===undefined) {
+                    index = contents.length - 1;
+                } */
                 return contents[index];
             },
             pop: function() {
-                if (!sorted) sort();
+                if (!sorted) {
+                    sort();
+                }
                 return contents.pop();
             },
             size: function() {
@@ -191,7 +197,7 @@ var MMCQ = (function() {
             });
         },
         palette: function() {
-            return this.vboxes.map(function(vb) { return vb.color });
+            return this.vboxes.map(function(vb) { return vb.color; });
         },
         size: function() {
             return this.vboxes.size();
@@ -239,25 +245,18 @@ var MMCQ = (function() {
         } */
     };
 
-    function vboxFromPixels(pixels, histo) {
+    /* function vboxFromPixels(pixels, histo) {
         var rmin=1000000, rmax=0, 
             gmin=1000000, gmax=0, 
             bmin=1000000, bmax=0, 
             rval, gval, bval;
         // find min/max
         pixels.forEach(function(pixel) {
-            /* rval = pixel[0] >> rshift;
-            gval = pixel[1] >> rshift;
-            bval = pixel[2] >> rshift; */
+
             rval = pixel[0] >> 3;
             gval = pixel[1] >> 3;
             bval = pixel[2] >> 3;
-            /* if (rval < rmin) rmin = rval;
-            else if (rval > rmax) rmax = rval;
-            if (gval < gmin) gmin = gval;
-            else if (gval > gmax) gmax = gval;
-            if (bval < bmin) bmin = bval;
-            else if (bval > bmax)  bmax = bval; */
+
             if (rval < rmin) {
                 rmin = rval;
             } else if (rval > rmax) {
@@ -277,7 +276,7 @@ var MMCQ = (function() {
             }
         });
         return new VBox(rmin, rmax, gmin, gmax, bmin, bmax, histo);
-    }
+    } */
     
     function medianCutApply(histo, vbox) {
         if (!vbox.count()) return;
@@ -385,8 +384,8 @@ var MMCQ = (function() {
                     return [vbox1, vbox2];
                 }
             }
-        
         }
+
         // determine the cut planes
         return maxw == rw ? doCut('r') :
             maxw == gw ? doCut('g') :
@@ -437,9 +436,51 @@ var MMCQ = (function() {
         } */
         
         // get the beginning vbox from the colors
-        var vbox = vboxFromPixels(pixels, histo),
+        /* var vbox = vboxFromPixels(pixels, histo), */
             /* pq = new PQueue(function(a,b) { return pv.naturalOrder(a.count(), b.count()) }); */
-            pq = new PQueue(function (a, b) {
+
+        /* function vboxFromPixels(pixels, histo) { */
+            var rmin=1000000, rmax=0,
+                gmin=1000000, gmax=0,
+                bmin=1000000, bmax=0,
+                rval, gval, bval;
+            // find min/max
+            pixels.forEach(function(pixel) {
+                /* rval = pixel[0] >> rshift;
+                gval = pixel[1] >> rshift;
+                bval = pixel[2] >> rshift; */
+                rval = pixel[0] >> 3;
+                gval = pixel[1] >> 3;
+                bval = pixel[2] >> 3;
+                /* if (rval < rmin) rmin = rval;
+                else if (rval > rmax) rmax = rval;
+                if (gval < gmin) gmin = gval;
+                else if (gval > gmax) gmax = gval;
+                if (bval < bmin) bmin = bval;
+                else if (bval > bmax)  bmax = bval; */
+                if (rval < rmin) {
+                    rmin = rval;
+                } else if (rval > rmax) {
+                    rmax = rval;
+                }
+
+                if (gval < gmin) {
+                    gmin = gval;
+                } else if (gval > gmax) {
+                    gmax = gval;
+                }
+
+                if (bval < bmin) {
+                    bmin = bval;
+                } else if (bval > bmax)  {
+                    bmax = bval;
+                }
+            });
+            /* return new VBox(rmin, rmax, gmin, gmax, bmin, bmax, histo);
+        }      */
+            var vbox = new VBox(rmin, rmax, gmin, gmax, bmin, bmax, histo);
+
+        var pq = new PQueue(function (a, b) {
                 var aCount = a.count(), bCount = b.count();
                 return (aCount < bCount) ? -1 : ((aCount > bCount) ? 1 : 0);
             });
@@ -473,7 +514,9 @@ var MMCQ = (function() {
                     lh.push(vbox2);
                     ncolors++;
                 }
-                if (ncolors >= target) return;
+                if (ncolors >= target) {
+                    return;
+                }
                 /* if (niters++ > maxIterations) { */
                 if (niters++ > 1000) {
                     /* console.log("infinite loop; perhaps too few pixels!"); */
