@@ -410,16 +410,17 @@ var MMCQ = (function() {
         /* function getHisto(pixels) {
             var /* histosize = 1 << (3 * sigbits), */
                 var histo = /* new Array(histosize) */ [],
-                index, rval, gval, bval;
+                index /*, rval, gval, bval */;
             pixels.forEach(function(pixel) {
                 /* rval = pixel[0] >> rshift;
                 gval = pixel[1] >> rshift;
                 bval = pixel[2] >> rshift; */
-                rval = pixel[0] >> 3;
+                /* rval = pixel[0] >> 3;
                 gval = pixel[1] >> 3;
-                bval = pixel[2] >> 3;
+                bval = pixel[2] >> 3; */
                 /* index = getColorIndex(rval, gval, bval); */
-                index = (rval << 10) + (gval << 5) + bval;
+                /* index = (rval << 10) + (gval << 5) + bval; */
+                index = ((pixel[0] >> 3) << 10) + ((pixel[1] >> 3) << 5) + (pixel[2] >> 3);
 
                 histo[index] = (histo[index] || 0) + 1;
             });
@@ -429,11 +430,11 @@ var MMCQ = (function() {
 
 
         // check that we aren't below maxcolors already
-        var nColors = 0;
+        /* var nColors = 0;
         histo.forEach(function() { nColors++ });
         if (nColors <= maxcolors) {
             // XXX: generate the new colors from the histo and return
-        }
+        } */
         
         // get the beginning vbox from the colors
         var vbox = vboxFromPixels(pixels, histo),
