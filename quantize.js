@@ -158,9 +158,12 @@ var MMCQ = (function() {
                         /* ~~(mult * (vbox.r1 + vbox.r2 + 1) / 2),
                         ~~(mult * (vbox.g1 + vbox.g2 + 1) / 2),
                         ~~(mult * (vbox.b1 + vbox.b2 + 1) / 2) */
-                        ~~(8 * (vbox.r1 + vbox.r2 + 1) / 2),
+                        /* ~~(8 * (vbox.r1 + vbox.r2 + 1) / 2),
                         ~~(8 * (vbox.g1 + vbox.g2 + 1) / 2),
-                        ~~(8 * (vbox.b1 + vbox.b2 + 1) / 2)
+                        ~~(8 * (vbox.b1 + vbox.b2 + 1) / 2) */
+                        ~~(4 * (vbox.r1 + vbox.r2 + 1)),
+                        ~~(4 * (vbox.g1 + vbox.g2 + 1)),
+                        ~~(4 * (vbox.b1 + vbox.b2 + 1))
                     ];
                 }
             }
@@ -199,7 +202,9 @@ var MMCQ = (function() {
             });
         },
         palette: function() {
-            return this.vboxes.map(function(vb) { return vb.color; });
+            return this.vboxes.map(function(vb) {
+                return vb.color;
+            });
         },
         size: function() {
             return this.vboxes.size();
@@ -350,7 +355,7 @@ var MMCQ = (function() {
         }
 
         partialsum.forEach(function (d,i) {
-            lookaheadsum[i] = total-d;
+            lookaheadsum[i] = total - d;
         });
 
         function doCut(color) {
